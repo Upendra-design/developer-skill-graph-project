@@ -1,0 +1,23 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: graphapp
+
+cognodb:
+  uri: ${COGNODB_URI}
+  username: ${COGNODB_USERNAME}
+  password: ${COGNODB_PASSWORD}
+
+app:
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173}
+
+  seed:
+    auto-seed: ${AUTO_SEED:true}
+
+logging:
+  level:
+    com.wexa.graphapp: INFO
+    org.neo4j.driver: WARN

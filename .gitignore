@@ -1,0 +1,27 @@
+# Backend (Maven)
+backend/target/
+backend/*.class
+
+# Frontend (Node)
+frontend/node_modules/
+frontend/dist/
+
+# Environment / secrets - NEVER commit real credentials
+.env
+.env.local
+**/.env
+**/*.env
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Eclipse generated files
+backend/bin/
