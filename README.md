@@ -1,12 +1,11 @@
-# Developer Skill & Project Network
+# Developer Skill & Project Network  ## Live Demo https://developer-skill-graph-project.vercel.app
 
-A small full-stack application, backed by **CognoDB** (a managed graph database), that lets you
+The application is deployed on Vercel and connected to the Spring Boot backend running on Render with CognoDB.
+A small full-stack application, backed by CognoDB (a managed graph database), that lets you
 explore how developers, skills, projects and technologies connect to one another.
-
 Built for the Wexa AI take-home assignment (CognoDB Assignment 2).
 
 ---
-
 ## 1. Project Overview
 
 Organizations build up a web of relationships over time: developers pick up skills, work on
@@ -329,19 +328,52 @@ mvn test
 ### Frontend (Vercel / Netlify)
 1. Create a new project from the repo, root directory `frontend`.
 2. Build command: `npm run build` — Output directory: `dist`
-3. Set environment variable `VITE_API_URL` to your deployed backend's `/api` URL
-   (e.g. `https://your-backend.onrender.com/api`).
+3. Set environment variable `VITE_API_URL` to your deployed backend's `/api`
+4. URL:`https://developer-skill-graph-project.onrender.com/api`
 
 ### Verifying the deployed app
-- Visit `https://<your-backend>/api/health` — should return `{"status":"UP", ...}`.
+- Visit `https://developer-skill-graph-project.onrender.com/api/health` — should return `{"status":"UP", ...}`.
 - Visit the deployed frontend URL — the Dashboard should show non-zero counts.
 - Open the browser dev tools Network tab and confirm API calls go to your deployed backend,
   not `localhost`.
 
 ## 18. Screenshots
 
-_Add screenshots of the Dashboard, Developers list, Developer Details, Projects, Project
-Details, and Graph Explorer pages here before submitting._
+### Dashboard
+
+Live counts pulled directly from CognoDB: Developers, Skills, Projects, and Technologies.
+
+![Dashboard](screenshots/dashboard.png)
+
+### Developers
+
+Browse and search all developers.
+
+![Developers List](screenshots/developers-list.png)
+
+### Developer Details
+
+View a developer's skills, known technologies, projects, and connected technologies through graph traversal.
+
+![Developer Details](screenshots/developer-details.png)
+
+### Projects
+
+Browse all projects and the technologies they use.
+
+![Projects List](screenshots/projects-list.png)
+
+### Project Details
+
+View technologies used, developers who worked on the project, and candidate developers identified through graph traversal.
+
+![Project Details](screenshots/project-details.png)
+
+### Graph Explorer
+
+Explore connections between developers, projects, and technologies through the graph.
+
+![Graph Explorer](screenshots/graph-explorer.png)
 
 ## 19. Future Improvements
 
@@ -366,52 +398,5 @@ Details, and Graph Explorer pages here before submitting._
 - [ ] All queries parameterized (verified in `GraphRepository.java`)
 - [ ] Working web app with loading, empty and error states
 - [ ] CognoDB instance left running until Wexa reviews the submission
-- [ ] Hosted demo link added to this README and to the submission email
-- [ ] Short screen recording created
 - [ ] Email sent to `hr@wexa.ai` with subject `CognoDB Assignment 2 – <Your Name>`
 
-## Demo / Screen Recording Script (2–3 minutes)
-
-1. **(15s)** "This is a Developer Skill & Project Network app backed by CognoDB, a managed
-   graph database." Show the Dashboard with live counts.
-2. **(30s)** Open **Developers**, click into one developer. Point out Skills, Known
-   Technologies, and Projects — all direct, 1-hop relationships.
-3. **(30s)** Scroll to **Connected Technologies** — explain this is a 2-hop traversal
-   (Developer → Project → Technology) showing technologies reached indirectly.
-4. **(30s)** Open **Projects**, click into a project. Point out **Candidate Developers** —
-   explain this is the query that would be awkward in SQL (3-hop + anti-join).
-5. **(30s)** Open **Graph Explorer**, switch between a couple of developers to show the
-   connections update live.
-6. **(15s)** Close with: "All queries are parameterized through the official Neo4j driver,
-   and connection details come from environment variables — never committed to source."
-
-## Likely Interview Questions & Simple Answers
-
-**Q: Why not just use a relational database with JOINs?**
-A: You can, and for 1–2 hops it's fine. But every extra hop of "and then what's connected to
-that" adds another JOIN, and "connected but not yet linked" patterns need anti-joins. In
-Cypher, adding a hop is just adding another `-[:REL]->()` — same readability at any depth.
-
-**Q: How do you prevent Cypher injection?**
-A: Every query uses the driver's parameter maps (`session.run(query, params)`) — user input is
-never concatenated into the query string. See `GraphRepository.java`.
-
-**Q: What happens if CognoDB is down?**
-A: The driver throws a `Neo4jException`, which `GraphRepository` catches and rewraps as a
-`DatabaseUnavailableException`. The global exception handler turns that into a clean HTTP 503
-with a friendly message instead of a stack trace, and the frontend shows an error state with
-a retry button.
-
-**Q: Why didn't you use Spring Data Neo4j?**
-A: The assignment asks for the official Neo4j driver directly, which also makes the exact
-Cypher being run fully explicit and easy to walk through in an interview, rather than
-generated by an object-graph mapper.
-
-**Q: How is the seed data idempotent?**
-A: Every seed query uses `MERGE` (not `CREATE`) keyed on each entity's `id`, so re-running the
-seed script updates existing nodes/relationships instead of duplicating them.
-
-**Q: How would you scale this beyond the free tier?**
-A: Add indexes/constraints for frequently filtered properties (already done for `id` via
-uniqueness constraints), paginate list endpoints, and consider read replicas for read-heavy
-traffic once the dataset and query volume grow past a single small instance.
