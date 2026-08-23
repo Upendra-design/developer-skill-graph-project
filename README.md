@@ -1,4 +1,5 @@
-# Developer Skill & Project Network  ## Live Demo https://developer-skill-graph-project.vercel.app
+# Developer Skill & Project Network  
+## Live Demo https://developer-skill-graph-project.vercel.app
 
 The application is deployed on Vercel and connected to the Spring Boot backend running on Render with CognoDB.
 A small full-stack application, backed by CognoDB (a managed graph database), that lets you
