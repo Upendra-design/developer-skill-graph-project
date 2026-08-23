@@ -4,7 +4,6 @@
 The application is deployed on Vercel and connected to the Spring Boot backend running on Render with CognoDB.
 A small full-stack application, backed by CognoDB (a managed graph database), that lets you
 explore how developers, skills, projects and technologies connect to one another.
-Built for the Wexa AI take-home assignment (CognoDB Assignment 2).
 
 ---
 ## 1. Project Overview
@@ -12,7 +11,7 @@ Built for the Wexa AI take-home assignment (CognoDB Assignment 2).
 Organizations build up a web of relationships over time: developers pick up skills, work on
 projects, and are exposed to technologies through those projects. Answering questions like
 *"who else on the team already knows the stack this new project needs?"* means walking that
-web of connections — which is exactly what a graph database is built for.
+web of connections  which is exactly what a graph database is built for.
 
 This app models that web as a graph and exposes it through a clean web UI.
 
@@ -64,7 +63,7 @@ under a minute — well suited to a fast-moving take-home project.
 **Backend**
 - Java 17, Spring Boot 3, Maven
 - Official Neo4j Java Driver (talks to CognoDB over Bolt)
-- Plain Spring MVC REST controllers — no Spring Data JPA / MySQL for the graph data
+- Plain Spring MVC REST controllers
 
 **Frontend**
 - React 18 + Vite
@@ -344,38 +343,43 @@ mvn test
 
 Live counts pulled directly from CognoDB: Developers, Skills, Projects, and Technologies.
 
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](dashboard.jpeg)
 
 ### Developers
 
 Browse and search all developers.
 
-![Developers List](screenshots/developers-list.png)
+![Developers List](developer-list.jpeg)
 
 ### Developer Details
 
 View a developer's skills, known technologies, projects, and connected technologies through graph traversal.
 
-![Developer Details](screenshots/developer-details.png)
+![Developer Details](developer-details.jpeg)
 
 ### Projects
 
 Browse all projects and the technologies they use.
 
-![Projects List](screenshots/projects-list.png)
+![Projects List](projects-list.jpeg)
 
 ### Project Details
 
 View technologies used, developers who worked on the project, and candidate developers identified through graph traversal.
 
-![Project Details](screenshots/project-details.png)
+![Project Details](project-details.jpeg)
 
 ### Graph Explorer
 
 Explore connections between developers, projects, and technologies through the graph.
 
-![Graph Explorer](screenshots/graph-explorer.png)
+![Graph Explorer](graph-explorer.jpeg)
 
+### Live Database
+
+CognoDB database and live data used by the application.
+
+![Live Database](db-live.jpeg)
 ## 19. Future Improvements
 
 - Add authentication so different teams can manage their own data.
@@ -384,20 +388,4 @@ Explore connections between developers, projects, and technologies through the g
   as an alternative to the column-based Graph Explorer view.
 - Add pagination for large datasets.
 - Add integration tests that run against a disposable Neo4j/CognoDB test instance.
-
----
-
-## GitHub Submission Checklist
-
-- [ ] Code pushed to a GitHub repository (public, or private with Wexa given access)
-- [ ] `.env` files are **not** committed (check `git status` / `.gitignore`)
-- [ ] `README.md` includes the "Why a graph database?" section (this file, section 3)
-- [ ] Data model diagram included (section 8, Mermaid)
-- [ ] Seed script included and documented (`SeedDataService` + section 15.5)
-- [ ] At least one 2+ hop traversal implemented and explained (sections 12–14)
-- [ ] At least one query that's awkward in SQL implemented and explained (candidate developers)
-- [ ] All queries parameterized (verified in `GraphRepository.java`)
-- [ ] Working web app with loading, empty and error states
-- [ ] CognoDB instance left running until Wexa reviews the submission
-- [ ] Email sent to `hr@wexa.ai` with subject `CognoDB Assignment 2 – <Your Name>`
 
