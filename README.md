@@ -1,5 +1,8 @@
-# Developer Skill & Project Network  
-## Live Demo https://developer-skill-graph-project.vercel.app
+ # Developer Skill & Project Network
+A full-stack application for exploring developers, skills, projects, and technology relationships using a graph database.
+
+**Live Demo:** https://developer-skill-graph-project.vercel.app  
+**GitHub Repository:** https://github.com/Upendra-design/developer-skill-graph-project
 
 The application is deployed on Vercel and connected to the Spring Boot backend running on Render with CognoDB.
 A small full-stack application, backed by CognoDB (a managed graph database), that lets you
