@@ -28,7 +28,7 @@ export default function Dashboard() {
       <div className="page-header">
         <h1>Developer Skill &amp; Project Network</h1>
         <p className="page-subtitle">
-          A graph-backed view of how developers, skills, projects and technologies connect.
+          A graph-powered platform for exploring relationships between developers, skills, projects, and technologies.
         </p>
       </div>
 
@@ -40,14 +40,10 @@ export default function Dashboard() {
       </div>
 
       <div className="card info-card">
-        <h3>Why a graph database?</h3>
+        <h3>graph database</h3>
         <p>
-          Questions like "which technologies has this developer been exposed to across
-          every project they've worked on" or "which developers already know the tech a
-          new project needs" are natural graph traversals — walk the relationships — but
-          require multiple JOINs and often recursive queries in a relational database.
-          Explore the <strong>Developers</strong>, <strong>Projects</strong> and{' '}
-          <strong>Graph Explorer</strong> pages to see these traversals in action.
+         A graph database is well suited for this application because developers, skills, projects, and technologies are highly interconnected.
+          It makes these relationships easier to model, query, and explore through graph traversals. Explore the Developers, Projects, and Graph Explorer pages to see these relationships in action.
         </p>
       </div>
     </div>
