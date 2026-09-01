@@ -157,88 +157,20 @@ graph LR
 | GET | `/api/technologies` | List all technologies |
 | POST | `/api/seed` | Re-run the idempotent demo seed script |
 
-## 12. Important Cypher Queries
-
-**Skills of a developer (1 hop):**
-```cypher
-MATCH (d:Developer {id: $id})-[:HAS_SKILL]->(s:Skill)
-RETURN s ORDER BY s.name
-```
-
-**Connected Technologies — multi-hop traversal (2 hops):**
-```cypher
-MATCH (d:Developer {id: $id})-[:WORKED_ON]->(:Project)-[:USES]->(t:Technology)
-RETURN DISTINCT t ORDER BY t.name
-```
-
-**Candidate developers for a project — 3-hop, relational-unfriendly query:**
-```cypher
-MATCH (p:Project {id: $id})-[:USES]->(t:Technology)<-[:KNOWS]-(d:Developer)
-WHERE NOT (d)-[:WORKED_ON]->(p)
-RETURN DISTINCT d ORDER BY d.name
-```
-
-**Related developers via shared project or technology (multi-path):**
-```cypher
-MATCH (d:Developer {id: $id})-[:WORKED_ON]->(p:Project)<-[:WORKED_ON]-(other:Developer)
-WHERE other.id <> $id
-RETURN DISTINCT other.id AS id, other.name AS name, p.name AS viaProject, 'Project' AS via
-UNION
-MATCH (d:Developer {id: $id})-[:KNOWS]->(t:Technology)<-[:KNOWS]-(other:Developer)
-WHERE other.id <> $id
-RETURN DISTINCT other.id AS id, other.name AS name, t.name AS viaProject, 'Technology' AS via
-```
-
-All of the above are executed through the official Neo4j Java Driver with parameters passed
-as a `Map<String, Object>` — never through string concatenation.
-
-## 13. Explanation of the Multi-Hop Traversal
-
-`findConnectedTechnologiesOfDeveloper` walks:
-
-```
-Developer --WORKED_ON--> Project --USES--> Technology
-```
-
-Starting at one developer, it follows every `WORKED_ON` edge to reach the projects they've
-contributed to, then follows every `USES` edge from those projects to reach technologies —
-two hops in total. `DISTINCT` collapses technologies reached via more than one project so each
-technology appears once. This answers "what has this developer been exposed to, even
-indirectly" — useful for staffing and skills-gap conversations that direct `KNOWS` edges alone
-can't answer.
-
-## 14. Why This Traversal Is Useful (vs. Relational)
-
-The equivalent SQL is a three-table join with a `DISTINCT`:
-
-```sql
-SELECT DISTINCT t.*
-FROM developer_projects dp
-JOIN project_technologies pt ON dp.project_id = pt.project_id
-JOIN technologies t ON pt.technology_id = t.id
-WHERE dp.developer_id = ?;
-```
-
-That's manageable at 2 hops, but the "candidate developers" query adds a `NOT EXISTS`
-anti-join across a fourth table, and each additional hop (e.g. "technologies known by
-teammates of teammates") adds another JOIN and gets harder to write and to optimize. In
-Cypher, adding a hop means adding one more `-[:REL]->()` to the pattern — the query stays
-readable regardless of how deep the traversal goes.
-
-## 15. Local Setup Instructions
+## 12. Local Setup Instructions
 
 ### Prerequisites
 - Java 17+ and Maven
 - Node.js 18+ and npm
 - A CognoDB Cloud instance (see step-by-step below)
 
-### 15.1 Create your CognoDB instance
+### 12.1 Create your CognoDB instance
 1. Go to `https://console.cognodb.com/signup` and sign up (free tier, no credit card).
 2. From the console, create a free (**c0**) instance and pick a region.
 3. Copy the connection URI (`bolt+s://<instance-id>.databases.cognodb.cloud`) and the
    generated password for user `cognodb` — **the password is shown only once**.
 
-### 15.2 Environment Variables
+### 12.2 Environment Variables
 
 **Backend** (`backend/.env.example` → copy to real environment variables):
 ```
@@ -254,10 +186,7 @@ AUTO_SEED=true
 ```
 VITE_API_URL=http://localhost:8080/api
 ```
-
-> Never commit real `.env` files or passwords. Both are already listed in `.gitignore`.
-
-### 15.3 Run the Backend
+### 12.3 Run the Backend
 ```bash
 cd backend
 export COGNODB_URI="bolt+s://<your-instance-id>.databases.cognodb.cloud"
@@ -269,7 +198,7 @@ mvn spring-boot:run
 The backend starts on `http://localhost:8080`. Because `AUTO_SEED=true` by default, it will
 automatically load the demo dataset into CognoDB on first run if the graph is empty.
 
-### 15.4 Run the Frontend
+### 12.4 Run the Frontend
 ```bash
 cd frontend
 npm install
@@ -278,14 +207,14 @@ npm run dev
 ```
 The frontend starts on `http://localhost:5173`.
 
-### 15.5 Seed Data Manually (optional)
+### 12.5 Seed Data Manually (optional)
 Seeding happens automatically on startup, but you can re-trigger it any time
 (it's idempotent — safe to run repeatedly):
 ```bash
 curl -X POST http://localhost:8080/api/seed
 ```
 
-## 16. Testing the API
+## 13. Testing the API
 
 ```bash
 curl http://localhost:8080/api/health
@@ -298,17 +227,6 @@ curl http://localhost:8080/api/projects/proj-1
 curl http://localhost:8080/api/projects/proj-1/candidate-developers
 ```
 
-Sample response for `GET /api/developers/dev-1`:
-```json
-{
-  "developer": { "id": "dev-1", "name": "Aisha Khan", "email": "aisha.khan@example.com" },
-  "skills": [{ "id": "skill-1", "name": "Backend Development" }],
-  "projects": [{ "id": "proj-1", "name": "Talent Graph Explorer", "description": "..." }],
-  "connectedTechnologies": [{ "id": "tech-1", "name": "Java", "category": "Language" }],
-  "knownTechnologies": [{ "id": "tech-1", "name": "Java", "category": "Language" }]
-}
-```
-
 Basic backend unit tests live in `backend/src/test/java/.../DeveloperServiceTest.java` and can
 be run with:
 ```bash
@@ -316,7 +234,7 @@ cd backend
 mvn test
 ```
 
-## 17. Deployment
+## 14. Deployment
 
 ### Backend (Render / Railway / any Java host)
 1. Push this repo to GitHub.
@@ -340,7 +258,7 @@ mvn test
 - Open the browser dev tools Network tab and confirm API calls go to your deployed backend,
   not `localhost`.
 
-## 18. Screenshots
+## 15. Screenshots
 
 ### Dashboard
 
@@ -383,7 +301,7 @@ Explore connections between developers, projects, and technologies through the g
 CognoDB database and live data used by the application.
 
 ![Live Database](db-live.jpeg)
-## 19. Future Improvements
+## 16. Future Improvements
 
 - Add authentication so different teams can manage their own data.
 - Add write operations (create/edit developers, projects, skills) through the UI.
